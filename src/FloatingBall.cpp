@@ -10,6 +10,36 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNAMIC(CFloatingBall, CWnd)
 
+// Runtime class information for dynamic creation
+CRuntimeClass* PASCAL CFloatingBall::_GetBaseClass()
+{
+	return CWnd::GetRuntimeClass();
+}
+
+CRuntimeClass* PASCAL CFloatingBall::GetThisClass()
+{
+	static CRuntimeClass classCFloatingBall = {
+		"CFloatingBall",
+		sizeof(CFloatingBall),
+		0xFFFF,
+		CFloatingBall::CreateObject,
+		&CFloatingBall::_GetBaseClass,
+		NULL,
+		NULL
+	};
+	return &classCFloatingBall;
+}
+
+CRuntimeClass* CFloatingBall::GetRuntimeClass() const
+{
+	return GetThisClass();
+}
+
+CObject* PASCAL CFloatingBall::CreateObject()
+{
+	return new CFloatingBall;
+}
+
 BEGIN_MESSAGE_MAP(CFloatingBall, CWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
@@ -131,7 +161,7 @@ void CFloatingBall::DrawBall(CDC* pDC)
 	rgn.CreateEllipticRgn(0, 0, rcClient.Width(), rcClient.Height());
 	
 	// 保存当前裁剪区域并设置圆形裁剪
-	CRgn* pOldRgn = memDC.SelectObject(&rgn);
+	int nResult = memDC.SelectClipRgn(&rgn);
 	
 	// 绘制渐变背景 - 从中心向外渐变
 	for (int i = 0; i < rcClient.Width() / 2; i++)
@@ -177,7 +207,7 @@ void CFloatingBall::DrawBall(CDC* pDC)
 	}
 	
 	// 恢复裁剪区域
-	memDC.SelectObject(pOldRgn);
+	memDC.SelectClipRgn(NULL);
 	
 	// 将内存DC复制到屏幕DC
 	pDC->BitBlt(0, 0, rcClient.Width(), rcClient.Height(), &memDC, 0, 0, SRCCOPY);

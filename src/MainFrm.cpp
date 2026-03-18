@@ -186,7 +186,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 创建悬浮圆球窗口
 	if (m_floatingBall.CreateBall(this))
 	{
-		m_floatingBall.SetMainWindow(&m_quickPaste.m_quickPaste);
+		m_floatingBall.SetMainWindow(m_quickPaste.m_pwndPaste);
 	}
 
     m_thread.Start(this);
