@@ -8,38 +8,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-IMPLEMENT_DYNAMIC(CFloatingBall, CWnd)
-
-// Runtime class information for dynamic creation
-CRuntimeClass* PASCAL CFloatingBall::_GetBaseClass()
-{
-	return CWnd::GetRuntimeClass();
-}
-
-CRuntimeClass* PASCAL CFloatingBall::GetThisClass()
-{
-	static CRuntimeClass classCFloatingBall = {
-		"CFloatingBall",
-		sizeof(CFloatingBall),
-		0xFFFF,
-		CFloatingBall::CreateObject,
-		&CFloatingBall::_GetBaseClass,
-		NULL,
-		NULL
-	};
-	return &classCFloatingBall;
-}
-
-CRuntimeClass* CFloatingBall::GetRuntimeClass() const
-{
-	return GetThisClass();
-}
-
-CObject* PASCAL CFloatingBall::CreateObject()
-{
-	return new CFloatingBall;
-}
-
 BEGIN_MESSAGE_MAP(CFloatingBall, CWnd)
 	ON_WM_CREATE()
 	ON_WM_PAINT()
@@ -117,7 +85,7 @@ void CFloatingBall::CreateRoundRegion()
 	GetClientRect(&rcClient);
 	
 	rgn.CreateEllipticRgn(0, 0, rcClient.Width(), rcClient.Height());
-	SetWindowRgn(rgn, TRUE);
+	SetWindowRgn((HRGN)rgn.Detach(), TRUE);
 }
 
 int CFloatingBall::OnCreate(LPCREATESTRUCT lpCreateStruct)
